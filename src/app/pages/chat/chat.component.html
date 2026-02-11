@@ -1,0 +1,110 @@
+<!-- Chat Widget Container (Always Open) -->
+<div class="chat-widget-fullscreen">
+  <!-- Chat Header -->
+  <div class="widget-header">
+    <button class="close-btn" (click)="closeChat()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6L6 18M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="header-content">
+      <h3>ParkSeva Support</h3>
+      <p>{{ useGeminiAI ? 'ParkSeva AI Mode' : 'Quick Answers Mode' }}</p>
+    </div>
+    <button class="ai-toggle-btn" (click)="toggleAIMode()" [title]="useGeminiAI ? 'Switch to Quick Answers' : 'Switch to ParkSeva AI'">
+      {{ useGeminiAI ? '🤖' : '⚡' }}
+    </button>
+  </div>
+
+  <!-- Messages Area -->
+  <div class="widget-messages" #messagesContainer>
+    <!-- Welcome Message -->
+    <div class="message-row bot-row" *ngIf="messages.length === 0">
+      <div class="message-bubble bot-bubble">
+        <p>👋 Hi! I'm ParkSeva Assistant. How can I help you today?</p>
+      </div>
+    </div>
+
+    <!-- FAQ Chips -->
+    <div class="faq-chips-container" *ngIf="showFAQs && messages.length === 0">
+      <button *ngFor="let faq of helpCenterService.faqs" class="faq-chip-btn" (click)="selectFAQ(faq)">
+        {{ faq.question }}
+      </button>
+    </div>
+
+    <!-- Chat Messages -->
+    <ng-container *ngFor="let message of messages; let i = index">
+      <div class="message-row"
+           [class.user-row]="isMyMessage(message)"
+           [class.bot-row]="!isMyMessage(message)">
+        <div class="message-bubble"
+             [class.user-bubble]="isMyMessage(message)"
+             [class.bot-bubble]="!isMyMessage(message)"
+             [innerHTML]="formatMessage(message.message)">
+        </div>
+        <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+      </div>
+
+      <!-- Inline Feedback Buttons (show after AI/Operator responses) -->
+      <div class="feedback-inline" *ngIf="!isMyMessage(message) && i === messages.length - 1 && showCSAT && !typingText">
+        <p class="feedback-label">Was this helpful?</p>
+        <div class="feedback-buttons">
+          <button class="feedback-btn positive" (click)="submitCSAT('POSITIVE')">
+            👍 Yes
+          </button>
+          <button class="feedback-btn neutral" (click)="submitCSAT('NEUTRAL')">
+            😐 Okay
+          </button>
+          <button class="feedback-btn negative" (click)="submitCSAT('NEGATIVE')">
+            👎 No
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Typing Indicator -->
+    <div class="message-row bot-row" *ngIf="typingText">
+      <div class="typing-bubble">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="suggestions-container" *ngIf="suggestions.length > 0">
+      <button *ngFor="let suggestion of suggestions" class="suggestion-btn" (click)="selectFAQ(suggestion)">
+        {{ suggestion.question }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="widget-input">
+    <input
+      type="text"
+      [(ngModel)]="newMessage"
+      (input)="onInputChange()"
+      (keyup.enter)="sendMessage()"
+      placeholder="Type your message..."
+      class="chat-input"
+    />
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Ticket Notification -->
+<div class="ticket-toast" *ngIf="ticketNotification">
+  <div class="toast-content">
+    <strong>Support Response Received</strong>
+    <p>{{ ticketNotification.id }}</p>
+  </div>
+  <div class="toast-actions">
+    <button class="toast-btn primary" (click)="viewTicketResponse()">View</button>
+    <button class="toast-btn" (click)="dismissNotification()">Dismiss</button>
+  </div>
+</div>
