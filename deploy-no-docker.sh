@@ -3,13 +3,17 @@ set -e
 
 echo "🚀 Starting deployment..."
 
-# Install dependencies
-echo "📦 Installing dependencies..."
-npm ci --production=false
+# Install dependencies (skip if node_modules exists and package.json unchanged)
+if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
+  echo "📦 Installing dependencies..."
+  npm install --prefer-offline --no-audit
+else
+  echo "📦 Dependencies already installed, skipping..."
+fi
 
 # Build Angular app
 echo "🔨 Building application..."
-npm run build
+npm run build -- --configuration production
 
 # Deploy to Nginx
 echo "📂 Deploying to Nginx..."
