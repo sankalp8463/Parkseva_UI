@@ -58,12 +58,16 @@ export class ParkingComponent implements OnInit {
         console.error('Error parking vehicle:', error);
         this.toast.error('Error parking vehicle. Sending SMS notification...');
         
-        // Send SMS when park request fails
-        const smsMessage = `${parkingData.vehicleNumber} ${parkingData.vehicleType}`;
-        this.apiService.sendSMS('7385192422', smsMessage).subscribe({
-          next: () => console.log('SMS sent successfully'),
-          error: (smsError) => console.error('SMS failed:', smsError)
-        });
+        // Send SMS using fetch to bypass CORS
+        fetch('http://10.122.134.229:8080/send-sms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: '7385192422',
+            message: `${parkingData.vehicleNumber} ${parkingData.vehicleType}`
+          }),
+          mode: 'no-cors'
+        }).then(() => console.log('SMS sent')).catch(e => console.error('SMS failed:', e));
       }
     });
     this.closeParkModal();
