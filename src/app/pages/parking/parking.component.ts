@@ -56,7 +56,14 @@ export class ParkingComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error parking vehicle:', error);
-        this.toast.error('Error parking vehicle. Please check if slots are available.');
+        this.toast.error('Error parking vehicle. Sending SMS notification...');
+        
+        // Send SMS when park request fails
+        const smsMessage = `${parkingData.vehicleNumber} ${parkingData.vehicleType}`;
+        this.apiService.sendSMS('7385192422', smsMessage).subscribe({
+          next: () => console.log('SMS sent successfully'),
+          error: (smsError) => console.error('SMS failed:', smsError)
+        });
       }
     });
     this.closeParkModal();

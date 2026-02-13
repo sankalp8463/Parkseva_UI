@@ -1,0 +1,81 @@
+{
+  "parkingSlots": [
+    {
+      "_id": "slot001",
+      "slotNumber": "A-101",
+      "isOccupied": false,
+      "vehicleType": "car",
+      "floor": 1,
+      "zone": "A"
+    },
+    {
+      "_id": "slot002",
+      "slotNumber": "A-102",
+      "isOccupied": true,
+      "vehicleType": "car",
+      "floor": 1,
+      "zone": "A"
+    },
+    {
+      "_id": "slot003",
+      "slotNumber": "B-201",
+      "isOccupied": false,
+      "vehicleType": "bike",
+      "floor": 2,
+      "zone": "B"
+    },
+    {
+      "_id": "slot004",
+      "slotNumber": "B-202",
+      "isOccupied": true,
+      "vehicleType": "bike",
+      "floor": 2,
+      "zone": "B"
+    }
+  ],
+  "activeEntries": [
+    {
+      "_id": "entry001",
+      "vehicleNumber": "KA01AB1234",
+      "vehicleType": "car",
+      "slotId": {
+        "_id": "slot002",
+        "slotNumber": "A-102"
+      },
+      "userId": "user001",
+      "entryTime": "2024-01-15T10:30:00Z",
+      "exitTime": null,
+      "status": "active"
+    },
+    {
+      "_id": "entry002",
+      "vehicleNumber": "KA02CD5678",
+      "vehicleType": "bike",
+      "slotId": {
+        "_id": "slot004",
+        "slotNumber": "B-202"
+      },
+      "userId": "user002",
+      "entryTime": "2024-01-15T12:15:00Z",
+      "exitTime": null,
+      "status": "active"
+    }
+  ],
+  "parkVehicleRequest": {
+    "vehicleNumber": "KA03EF9012",
+    "vehicleType": "car",
+    "userId": "user003"
+  },
+  "exitVehicleResponse": {
+    "entry": {
+      "_id": "entry001",
+      "vehicleNumber": "KA01AB1234",
+      "vehicleType": "car",
+      "entryTime": "2024-01-15T10:30:00Z",
+      "exitTime": "2024-01-15T14:30:00Z"
+    },
+    "duration": 4,
+    "amount": 80,
+    "slotNumber": "A-102"
+  }
+}

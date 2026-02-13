@@ -83,6 +83,12 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/admin-parking-entries/park`, parkData, { headers: this.getAuthHeaders() });
   }
 
+  // SMS Gateway
+  sendSMS(phone: string, message: string): Observable<any> {
+    const smsGateway = 'http://10.122.134.229:8080/send-sms';
+    return this.http.post(smsGateway, { phone, message });
+  }
+
   exitVehicle(entryId: string): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin-parking-entries/exit/${entryId}`, {}, { headers: this.getAuthHeaders() });
   }
